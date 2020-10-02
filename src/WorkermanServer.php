@@ -19,14 +19,7 @@ use Workerman\Worker;
 
 class WorkermanServer extends ServerHandler
 {
-    private ?Worker $worker = null;
-
     private ?ConfigModel $config = null;
-
-    public function worker(): ?Worker
-    {
-        return $this->worker;
-    }
 
     public function receive(ConnectionInterface $connection, Request $request)
     {
@@ -65,14 +58,15 @@ class WorkermanServer extends ServerHandler
     protected function cli(string $command_name = null): void
     {
         // init worker
-        $url                 = $this->config->protocol . '://' . $this->config->host . ':' . (string) ($this->config->port);
-        $this->worker        = new Worker($url, $this->config->context);
-        $this->worker->count = $this->config->worker;
+        $url           = $this->config->protocol . '://' . $this->config->host . ':' . (string) ($this->config->port);
+        $worker        = new Worker($url, $this->config->context);
+        $worker->count = $this->config->worker;
         if (!empty($this->config->options)) {
             foreach ($this->config->options as $k => $v) {
-                $this->worker->{$k} = $v;
+                $worker->{$k} = $v;
             }
         }
+        Event::trigger('worker_init', $worker);
 
         // clear cache
         Files::remove(Path::cache());
@@ -81,38 +75,38 @@ class WorkermanServer extends ServerHandler
         $dispatch = new Dispatch($this->app->namespace);
         Container::bindNXWithObj('cgi_dispatch', $dispatch);
 
-        $this->worker->onWorkerStart = function ($worker) {
+        $worker->onWorkerStart = function ($worker) {
             Event::trigger('worker_start', $worker);
         };
 
-        $this->worker->onWorkerReload = function ($worker) {
+        $worker->onWorkerReload = function ($worker) {
             Event::trigger('worker_reload', $worker);
         };
 
-        $this->worker->onConnect = function ($connection) {
+        $worker->onConnect = function ($connection) {
             Event::trigger('worker_connect', $connection);
         };
 
-        $this->worker->onClose = function ($connection) {
+        $worker->onClose = function ($connection) {
             Event::trigger('worker_close', $connection);
         };
 
-        $this->worker->onBufferFull = function ($connection) {
+        $worker->onBufferFull = function ($connection) {
             Event::trigger('worker_buffer_full', $connection);
         };
 
-        $this->worker->onBufferDrain = function ($connection) {
+        $worker->onBufferDrain = function ($connection) {
             Event::trigger('worker_buffer_brain', $connection);
         };
 
-        $this->worker->onError = function ($connection, $code, $msg) {
-            Event::trigger('worker_buffer_brain', $connection, $code, $msg);
+        $worker->onError = function ($connection, $code, $msg) {
+            Event::trigger('worker_error', $connection, $code, $msg);
         };
 
         Event::registerWithObj('worker_message', $this, 'receive');
 
         // listen request
-        $this->worker->onMessage = function (ConnectionInterface $connection, Request $request) {
+        $worker->onMessage = function (ConnectionInterface $connection, Request $request) {
             Event::trigger('worker_message', $connection, $request);
         };
 
