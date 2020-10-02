@@ -92,12 +92,12 @@ App::drive('workerman')
 |worker_init|(Workerman\Worker $worker)|
 |worker_start|(Workerman\Worker $worker)|
 |worker_reload|(Workerman\Worker $worker)|
-|worker_connect|(ConnectionInterface $connection)|
-|worker_close|(ConnectionInterface $connection)|
-|worker_buffer_full|(ConnectionInterface $connection)|
-|worker_buffer_brain|(ConnectionInterface $connection) |
-|worker_error|(ConnectionInterface $connection, $code, $msg)|
-|worker_message|(ConnectionInterface $connection, Request $request)|
+|worker_connect|(Workerman\Connection\ConnectionInterface $connection)|
+|worker_close|(Workerman\Connection\ConnectionInterface $connection)|
+|worker_buffer_full|(Workerman\Connection\ConnectionInterface $connection)|
+|worker_buffer_brain|(Workerman\Connection\ConnectionInterface $connection) |
+|worker_error|(Workerman\Connection\ConnectionInterface $connection, $code, $msg)|
+|worker_message|(Workerman\Connection\ConnectionInterface $connection, Workerman\Protocols\Http\Request $request)|
 
 ## License
 
