@@ -9,7 +9,7 @@
 ## Install
 
 ```bash
-composer require axios/tpr-workman
+composer require axios/tpr-workerman
 ```
 
 ## Usage
