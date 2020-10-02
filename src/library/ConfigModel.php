@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace tpr\server\library;
 
@@ -9,13 +9,11 @@ use tpr\Model;
 class ConfigModel extends Model
 {
     /**
-     * websocket | http | tcp | custom
-     *
-     * @var string
+     * websocket | http | tcp | custom.
      */
-    public string $protocol = "http";
+    public string $protocol = 'http';
 
-    public string $host = "0.0.0.0";
+    public string $host = '0.0.0.0';
 
     public int $port = 2346;
 
