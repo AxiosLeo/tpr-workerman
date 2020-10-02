@@ -1,28 +1,34 @@
 {
-    "name": "axios/tpr-workerman",
-    "description": "Workerman server handler for tpr framework",
-    "keywords": [
-        "http server",
-        "workerman"
-    ],
-    "homepage": "https://github.com/AxiosCros/tpr-workerman",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "axios leo",
-            "email": "axiosleo@foxmail.com"
-        }
-    ],
-    "support": {
-        "issues": "https://github.com/AxiosCros/tpr-workerman/issues"
-    },
-    "require": {
-        "php": ">=7.4",
-        "axios/tpr": "^5.0.1"
-    },
-    "autoload": {
-        "psr-4": {
-            "tpr\\server\\": "src/"
-        }
+  "name": "axios/tpr-workerman",
+  "description": "Workerman server handler for tpr framework",
+  "keywords": [
+    "http",
+    "tcp",
+    "socket",
+    "workerman"
+  ],
+  "homepage": "https://github.com/AxiosCros/tpr-workerman",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "axios leo",
+      "email": "axiosleo@foxmail.com"
     }
+  ],
+  "support": {
+    "issues": "https://github.com/AxiosCros/tpr-workerman/issues"
+  },
+  "require": {
+    "php": ">=7.4",
+    "axios/tpr": "^5.0.1",
+    "workerman/workerman": "^4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "tpr\\server\\": "src/"
+    }
+  },
+  "require-dev": {
+    "symfony/var-dumper": "*"
+  }
 }
