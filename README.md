@@ -1,6 +1,4 @@
-# tpr-workerman
-
-> Use workerman with tpr framework
+# Use workerman with TPR framework
 
 ## Require
 
@@ -13,6 +11,24 @@ composer require axios/tpr-workerman
 ```
 
 ## Usage
+
+- Simple
+
+```php
+<?php
+namespace demo;
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+use tpr\App;
+use tpr\server\WorkermanServer;
+
+App::registerServer('workerman', WorkermanServer::class);
+
+App::drive('workerman')->run();
+```
+
+- Complete Example
 
 ```php
 <?php
