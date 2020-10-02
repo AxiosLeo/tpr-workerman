@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace tpr\server\library;
 
@@ -31,7 +31,7 @@ class WorkermanRequest extends RequestAbstract implements RequestInterface
     {
         $put = $this->getRequestData('put', function () {
             if ('json' === $this->contentType()) {
-                $put = (array)json_decode($this->content(), true);
+                $put = (array) json_decode($this->content(), true);
             } else {
                 parse_str($this->content(), $put);
             }
@@ -79,6 +79,7 @@ class WorkermanRequest extends RequestAbstract implements RequestInterface
     {
         return $this->getRequestData('time', function () use ($micro, $format) {
             $time = $micro ? microtime(true) : time();
+
             return null === $format ? $time : date($format, $time);
         });
     }
@@ -112,12 +113,13 @@ class WorkermanRequest extends RequestAbstract implements RequestInterface
         $request = $this->getRequestData('request', function () {
             return $this->setRequestData('request', $_REQUEST);
         });
+
         return $this->input($request, $name, $default);
     }
 
     public function isHttps(): bool
     {
-        return $this->scheme() === 'https';
+        return 'https' === $this->scheme();
     }
 
     public function scheme(): string
@@ -149,7 +151,8 @@ class WorkermanRequest extends RequestAbstract implements RequestInterface
     {
         return $this->getRequestData('host', function () {
             $host = $this->request->host();
-            $tmp  = explode(":", $host, 2);
+            $tmp  = explode(':', $host, 2);
+
             return $tmp[0];
         });
     }
@@ -158,8 +161,9 @@ class WorkermanRequest extends RequestAbstract implements RequestInterface
     {
         return $this->getRequestData('port', function () {
             $host = $this->request->host();
-            $tmp  = explode(":", $host, 2);
-            return (int)$tmp[1];
+            $tmp  = explode(':', $host, 2);
+
+            return (int) $tmp[1];
         });
     }
 
@@ -167,6 +171,7 @@ class WorkermanRequest extends RequestAbstract implements RequestInterface
     {
         return $this->getRequestData('index_file', function () {
             $uri = $this->request->uri();
+
             return parse_url($uri, PHP_URL_PATH);
         });
     }
@@ -200,9 +205,11 @@ class WorkermanRequest extends RequestAbstract implements RequestInterface
     {
         if ($is_whole) {
             $url = $this->scheme() . '://' . $this->host();
-            $url .= ':' . (string)($this->port());
+            $url .= ':' . (string) ($this->port());
+
             return $url . $this->request->uri();
         }
+
         return $this->request->uri();
     }
 }
