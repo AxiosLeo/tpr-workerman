@@ -3,6 +3,7 @@
 ## Require
 
 - PHP >= 7.4
+- [workerman](https://github.com/walkor/workerman) >= 4.0
 
 ## Install
 
