@@ -53,11 +53,13 @@ App::debugMode(false);
 
 App::registerServer('workerman', WorkermanServer::class);
 
+App::drive('workerman'); // initialize App before initialize Event
+
 Event::on('worker_init', function (Worker $worker) {
     // handle worker object in here
 });
 
-App::drive('workerman')
+App::workerman()
     ->config([
         'namespace'       => 'app',           // app base namespace, ### this is required ###
         'lang'            => 'zh-cn',         // default language set name
