@@ -25,6 +25,7 @@ class WorkermanServer extends ServerHandler
     {
         $req = new WorkermanRequest($request, $this->config);
         Container::bindWithObj('request', $req);
+        Container::bind('response', Response::class);
 
         try {
             Container::dispatch()->run();
@@ -48,6 +49,7 @@ class WorkermanServer extends ServerHandler
             }
         }
         Container::delete('request');
+        Container::delete('response');
     }
 
     protected function cgi(): void
@@ -71,7 +73,6 @@ class WorkermanServer extends ServerHandler
         // clear cache
         Files::remove(Path::cache());
 
-        Container::bind('response', Response::class);
         $dispatch = new Dispatch($this->app->namespace);
         Container::bindNXWithObj('cgi_dispatch', $dispatch);
 
