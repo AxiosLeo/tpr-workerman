@@ -119,7 +119,7 @@ class WorkermanServer extends ServerHandler
         Event::trigger('app_begin', $this->app);
         Config::load(Path::config());
         $this->config = new ConfigModel();
-        if (!$this->app->server_options) {
+        if ($this->app->server_options) {
             $this->config->unmarshall($this->app->server_options);
         }
         $this->app->cache_time = 0;
