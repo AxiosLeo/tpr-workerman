@@ -54,7 +54,7 @@ class WorkermanServer extends ServerHandler
 
     protected function cgi(): void
     {
-        throw new \Exception('CGI mode startup of the worker server is not supported.');
+        throw new \Exception('starting the worker server on CGI mode is not supported.');
     }
 
     protected function cli(string $command_name = null): void
