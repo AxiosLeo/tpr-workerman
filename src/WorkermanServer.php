@@ -26,6 +26,7 @@ class WorkermanServer extends ServerHandler
         $req = new WorkermanRequest($request, $this->config);
         Container::bindWithObj('request', $req);
         Container::bind('response', Response::class);
+        Event::trigger('app_response_before');
 
         try {
             Container::dispatch()->run();
@@ -76,31 +77,31 @@ class WorkermanServer extends ServerHandler
         $dispatch = new Dispatch($this->app->namespace);
         Container::bindNXWithObj('cgi_dispatch', $dispatch);
 
-        $worker->onWorkerStart = function ($worker) {
+        $worker->onWorkerStart = function (Worker $worker) {
             Event::trigger('worker_start', $worker);
         };
 
-        $worker->onWorkerReload = function ($worker) {
+        $worker->onWorkerReload = function (Worker $worker) {
             Event::trigger('worker_reload', $worker);
         };
 
-        $worker->onConnect = function ($connection) {
+        $worker->onConnect = function (ConnectionInterface $connection) {
             Event::trigger('worker_connect', $connection);
         };
 
-        $worker->onClose = function ($connection) {
+        $worker->onClose = function (ConnectionInterface $connection) {
             Event::trigger('worker_close', $connection);
         };
 
-        $worker->onBufferFull = function ($connection) {
+        $worker->onBufferFull = function (ConnectionInterface $connection) {
             Event::trigger('worker_buffer_full', $connection);
         };
 
-        $worker->onBufferDrain = function ($connection) {
+        $worker->onBufferDrain = function (ConnectionInterface $connection) {
             Event::trigger('worker_buffer_brain', $connection);
         };
 
-        $worker->onError = function ($connection, $code, $msg) {
+        $worker->onError = function (ConnectionInterface $connection, $code, $msg) {
             Event::trigger('worker_error', $connection, $code, $msg);
         };
 
@@ -138,5 +139,6 @@ class WorkermanServer extends ServerHandler
         $response->withBody($e->result);
         $response->withStatus($e->http_status);
         $connection->send($response);
+        Event::trigger('app_response_after', $e->result);
     }
 }
