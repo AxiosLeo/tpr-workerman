@@ -105,10 +105,12 @@ class WorkermanServer extends ServerHandler
             Event::trigger('worker_error', $connection, $code, $msg);
         };
 
-        Event::registerWithObj('worker_message', $this, 'receive');
+        if (0 === Event::size('worker_message')) {
+            Event::registerWithObj('worker_message', $this, 'receive');
+        }
 
         // listen request
-        $worker->onMessage = function (ConnectionInterface $connection, Request $request) {
+        $worker->onMessage = function (ConnectionInterface $connection, $request) {
             Event::trigger('worker_message', $connection, $request);
         };
 
