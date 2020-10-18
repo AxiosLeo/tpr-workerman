@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace tpr\server\library;
 
@@ -16,6 +16,8 @@ class ConfigModel extends Model
     public string $host = '0.0.0.0';
 
     public int $port = 2346;
+
+    public int $port_global = 2207;
 
     public int $worker = 4;
 

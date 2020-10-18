@@ -20,12 +20,12 @@
   },
   "require": {
     "php": ">=7.4",
-    "axios/tpr": "^5.0.1",
+    "axios/tpr": "^5.0",
     "workerman/workerman": "^4.0"
   },
   "autoload": {
     "psr-4": {
-      "tpr\\server\\": "src/"
+      "tpr\\server\\workerman\\": "src/"
     }
   },
   "require-dev": {

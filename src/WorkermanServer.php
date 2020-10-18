@@ -1,6 +1,6 @@
 <?php
 
-namespace tpr\server;
+namespace tpr\server\workerman;
 
 use tpr\App;
 use tpr\Config;
@@ -12,9 +12,12 @@ use tpr\exception\HttpResponseException;
 use tpr\Files;
 use tpr\Path;
 use tpr\server\library\ConfigModel;
-use tpr\server\library\WorkermanRequest;
+use tpr\server\library\Connections;
+use tpr\server\library\HttpRequest;
+use tpr\server\ServerHandler;
 use Workerman\Connection\ConnectionInterface;
 use Workerman\Protocols\Http\Request;
+use Workerman\Timer;
 use Workerman\Worker;
 
 class WorkermanServer extends ServerHandler
@@ -23,7 +26,7 @@ class WorkermanServer extends ServerHandler
 
     public function receive(ConnectionInterface $connection, Request $request)
     {
-        $req = new WorkermanRequest($request, $this->config);
+        $req = new HttpRequest($request, $this->config);
         Container::bindWithObj('request', $req);
         Container::bind('response', Response::class);
         Event::trigger('app_response_before');
@@ -61,7 +64,7 @@ class WorkermanServer extends ServerHandler
     protected function cli(string $command_name = null): void
     {
         // init worker
-        $url           = $this->config->protocol . '://' . $this->config->host . ':' . (string) ($this->config->port);
+        $url           = $this->config->protocol . '://' . $this->config->host . ':' . (string)($this->config->port);
         $worker        = new Worker($url, $this->config->context);
         $worker->count = $this->config->worker;
         if (!empty($this->config->options)) {
@@ -69,6 +72,8 @@ class WorkermanServer extends ServerHandler
                 $worker->{$k} = $v;
             }
         }
+        // GlobalData Server
+        new Server($this->config->host, $this->config->port_global);
         Event::trigger('worker_init', $worker);
 
         // clear cache
@@ -79,6 +84,8 @@ class WorkermanServer extends ServerHandler
 
         $worker->onWorkerStart = function (Worker $worker) {
             Event::trigger('worker_start', $worker);
+            global $global;
+            $global = new \GlobalData\Client($this->config->host . ':' . $this->config->port_global);
         };
 
         $worker->onWorkerReload = function (Worker $worker) {
@@ -105,12 +112,25 @@ class WorkermanServer extends ServerHandler
             Event::trigger('worker_error', $connection, $code, $msg);
         };
 
-        Event::registerWithObj('worker_message', $this, 'receive');
-
         // listen request
-        $worker->onMessage = function (ConnectionInterface $connection, Request $request) {
-            Event::trigger('worker_message', $connection, $request);
-        };
+        switch ($this->config->protocol) {
+            case 'http':
+                Event::registerWithObj('worker_message', $this, 'receive');
+                $worker->onMessage = function (ConnectionInterface $connection, Request $request) {
+                    Event::trigger('worker_message_http', $connection, $request);
+                };
+                break;
+            case 'websocket':
+                $worker->onMessage = function (ConnectionInterface $connection, $request) {
+                    Event::trigger('worker_message_ws', $connection, $request);
+                };
+                break;
+            default:
+                $worker->onMessage = function (ConnectionInterface $connection, $request) {
+                    Event::trigger('worker_message_' . (string)$this->config->protocol, $connection, $request);
+                };
+        }
+
 
         // run worker
         Worker::runAll();

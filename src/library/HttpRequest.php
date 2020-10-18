@@ -10,7 +10,7 @@ use tpr\Event;
 use Workerman\Protocols\Http\Request;
 use Workerman\Worker;
 
-class WorkermanRequest extends RequestAbstract implements RequestInterface
+class HttpRequest extends RequestAbstract implements RequestInterface
 {
     private Request $request;
 
