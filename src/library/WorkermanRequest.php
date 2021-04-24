@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace tpr\server\library;
 
@@ -31,7 +31,7 @@ class WorkermanRequest extends RequestAbstract implements RequestInterface
     {
         $put = $this->getRequestData('put', function () {
             if ('json' === $this->contentType()) {
-                $put = (array)json_decode($this->content(), true);
+                $put = (array) json_decode($this->content(), true);
             } else {
                 parse_str($this->content(), $put);
             }
@@ -87,7 +87,6 @@ class WorkermanRequest extends RequestAbstract implements RequestInterface
     /**
      * @param null $name
      *
-     * @return string
      * @deprecated
      */
     public function server($name = null): string
@@ -98,7 +97,7 @@ class WorkermanRequest extends RequestAbstract implements RequestInterface
     public function pathInfo(): string
     {
         return $this->getRequestData('path_info', function () {
-            return parse_url($this->request->uri(), PHP_URL_PATH);
+            return parse_url($this->request->uri(), \PHP_URL_PATH);
         });
     }
 
@@ -169,7 +168,7 @@ class WorkermanRequest extends RequestAbstract implements RequestInterface
             $host = $this->request->host();
             $tmp  = explode(':', $host, 2);
 
-            return (int)$tmp[1];
+            return (int) $tmp[1];
         });
     }
 
@@ -178,7 +177,7 @@ class WorkermanRequest extends RequestAbstract implements RequestInterface
         return $this->getRequestData('index_file', function () {
             $uri = $this->request->uri();
 
-            return parse_url($uri, PHP_URL_PATH);
+            return parse_url($uri, \PHP_URL_PATH);
         });
     }
 
@@ -211,7 +210,7 @@ class WorkermanRequest extends RequestAbstract implements RequestInterface
     {
         if ($is_whole) {
             $url = $this->scheme() . '://' . $this->host();
-            $url .= ':' . (string)($this->port());
+            $url .= ':' . (string) ($this->port());
 
             return $url . $this->request->uri();
         }

@@ -9,7 +9,6 @@ use tpr\core\Dispatch;
 use tpr\core\Response;
 use tpr\Event;
 use tpr\exception\HttpResponseException;
-use tpr\Files;
 use tpr\Path;
 use tpr\server\library\ConfigModel;
 use tpr\server\library\WorkermanRequest;
@@ -72,7 +71,9 @@ class WorkermanServer extends ServerHandler
         Event::trigger('worker_init', $worker);
 
         // clear cache
-        Files::remove(Path::cache());
+        if (file_exists(Path::cache())) {
+            \axios\tools\Files::remove(Path::cache());
+        }
 
         $dispatch = new Dispatch($this->app->namespace);
         Container::bindNXWithObj('cgi_dispatch', $dispatch);

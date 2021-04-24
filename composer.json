@@ -20,7 +20,7 @@
   },
   "require": {
     "php": ">=7.4",
-    "axios/tpr": "^5.0.1",
+    "axios/tpr": "~5.1.0",
     "workerman/workerman": "^4.0"
   },
   "autoload": {
