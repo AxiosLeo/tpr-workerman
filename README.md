@@ -106,4 +106,4 @@ App::workerman()
 
 ## License
 
-The TPR framework is open-sourced software licensed under the [MIT](LICENSE).
+The project is open-sourced software licensed under the [MIT](LICENSE).
